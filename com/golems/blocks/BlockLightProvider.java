@@ -1,5 +1,7 @@
 package com.golems.blocks;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -31,21 +33,26 @@ public class BlockLightProvider extends Block implements ITileEntityProvider
 		blockHardness = -1F;
 		setLightLevel(lightLevel);
 		this.translucent = true;
-
 	}
-
+	
+	@Nullable
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
+    {
+        return NULL_AABB;
+    }
+/*
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
 	{
-		return SINGULAR_AABB;
+		return NULL_AABB;
 	}
 
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
 	{
-		return NULL_AABB;
+		return SINGULAR_AABB;
 	}
-
+*/
 	@Override
 	public boolean isFullyOpaque(IBlockState state)
 	{

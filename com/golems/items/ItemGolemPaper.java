@@ -46,7 +46,7 @@ public class ItemGolemPaper extends Item
 			trans("tile.blockLapis.name") + C + trans("tile.slime.name") + C + trans("tile.clay.name") + C +
 			trans("tile.bookshelf.name") + C + trans("tile.sponge.dry.name") + C + trans("tile.melon.name") + C + trans("tile.workbench.name") + C +
 			trans("tile.cloth.name") + C + trans("tile.hayBlock.name") + C + trans("material.leaf_block") + C + trans("tile.magma.name") + C +
-			trans("tile.netherWartBlock.name") + C + trans("tile.redNetherBrick.name");		
+			trans("tile.netherWartBlock.name") + C + trans("tile.redNetherBrick.name") + C + trans("tile.boneBlock.name");		
 			par3List.add(toAdd);
 			GolemPaperAddInfoEvent event = new GolemPaperAddInfoEvent(stack, player, par3List, advanced);
 			MinecraftForge.EVENT_BUS.post(event);

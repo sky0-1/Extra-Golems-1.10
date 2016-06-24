@@ -18,8 +18,7 @@ public class TileEntityMovingPowerSource extends TileEntityMovingLightSource
 		{
 			if(worldObj.getBlockState(getPos()).getBlock() instanceof BlockPowerProvider)
 			{
-				worldObj.removeTileEntity(getPos());
-				worldObj.setBlockToAir(getPos());
+				selfDestruct();
 			}
 		}
 	}

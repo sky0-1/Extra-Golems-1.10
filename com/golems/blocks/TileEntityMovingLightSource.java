@@ -6,6 +6,7 @@ import com.golems.entity.GolemLightProvider;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -38,11 +39,16 @@ public class TileEntityMovingLightSource extends TileEntity implements ITickable
 		{
 			if(worldObj.getBlockState(getPos()).getBlock() instanceof BlockLightProvider)
 			{
-				worldObj.removeTileEntity(getPos());
-				worldObj.setBlockToAir(getPos());
+				selfDestruct();
 			}
 		}
 	} 
+	
+	protected void selfDestruct()
+	{
+		worldObj.removeTileEntity(getPos());
+		worldObj.setBlockState(getPos(), Blocks.AIR.getDefaultState(), 3);
+	}
 
 	protected AxisAlignedBB getAABBToCheck(World worldIn, BlockPos pos)
 	{

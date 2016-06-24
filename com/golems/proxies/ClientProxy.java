@@ -66,9 +66,6 @@ public class ClientProxy extends CommonProxy
 	{
 		// itemblocks
 		registerRender(GolemItems.ibGolemHead, "minecraft:pumpkin");
-		registerRender(GolemItems.ibLightSourceFull);
-		registerRender(GolemItems.ibLightSourceHalf);
-		registerRender(GolemItems.ibPowerSource);
 		// items
 		registerRender(GolemItems.golemPaper);	
 		registerRender(GolemItems.spawnBedrockGolem);

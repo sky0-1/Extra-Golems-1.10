@@ -25,9 +25,6 @@ public class GolemItems
 	public static Block blockPowerSource;	
 	
 	public static ItemBlock ibGolemHead;
-	public static ItemBlock ibLightSourceFull;
-	public static ItemBlock ibLightSourceHalf;
-	public static ItemBlock ibPowerSource;
 
 	public static void mainRegistry()
 	{
@@ -40,10 +37,10 @@ public class GolemItems
 
 		register(golemPaper, "golem_paper");
 		register(spawnBedrockGolem, "spawn_bedrock_golem");
-		register(golemHead, ibGolemHead, "golem_head");
-		register(blockLightSourceFull, ibLightSourceFull, "light_provider_full");
-		register(blockLightSourceHalf, ibLightSourceHalf, "light_provider_half");
-		register(blockPowerSource, ibPowerSource, "power_provider_all");
+		registerWithItemBlock(golemHead, ibGolemHead, "golem_head");
+		register(blockLightSourceFull, "light_provider_full");
+		register(blockLightSourceHalf, "light_provider_half");
+		register(blockPowerSource, "power_provider_all");
 	}
 
 	private static void initBlocks()
@@ -57,9 +54,6 @@ public class GolemItems
 	private static void initItemBlocks()
 	{
 		ibGolemHead = new ItemBlock(golemHead);
-		ibLightSourceFull = new ItemBlock(blockLightSourceFull);
-		ibLightSourceHalf = new ItemBlock(blockLightSourceHalf);
-		ibPowerSource = new ItemBlock(blockPowerSource);
 	}
 
 	private static void initItems()
@@ -73,13 +67,18 @@ public class GolemItems
 		item.setUnlocalizedName(name).setRegistryName(ExtraGolems.MODID, name);
 		GameRegistry.register(item);
 	}
+	
+	private static void registerWithItemBlock(Block block, ItemBlock itemBlock, String name)
+	{
+		register(block, name);
+		itemBlock.setUnlocalizedName(name).setRegistryName(ExtraGolems.MODID, name);
+		GameRegistry.register(itemBlock);
+	}
 
-	private static void register(Block block, ItemBlock itemBlock, String name)
+	private static void register(Block block, String name)
 	{
 		block.setUnlocalizedName(name).setRegistryName(ExtraGolems.MODID, name);
-		itemBlock.setUnlocalizedName(name).setRegistryName(ExtraGolems.MODID, name);
 		GameRegistry.register(block);
-		GameRegistry.register(itemBlock);
 	}
 
 	private static void register(Class <? extends TileEntity> teClass, String name)

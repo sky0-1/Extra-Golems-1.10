@@ -41,24 +41,24 @@ public class EntityAIPlaceRandomBlocks extends EntityAIBase {
 
 	@Override
 	public boolean shouldExecute() {
-		return golem.world.rand.nextInt(tickDelay) == 0 && this.canExecute.test(this);
+		return golem.worldObj.rand.nextInt(tickDelay) == 0 && this.canExecute.test(this);
 	}
 
 	@Override
 	public void startExecuting() {
-		final int x = MathHelper.floor(golem.posX);
-		final int y = MathHelper.floor(golem.posY - 0.20000000298023224D);
-		final int z = MathHelper.floor(golem.posZ);
+		final int x = MathHelper.floor_double(golem.posX);
+		final int y = MathHelper.floor_double(golem.posY - 0.20000000298023224D);
+		final int z = MathHelper.floor_double(golem.posZ);
 		final BlockPos below = new BlockPos(x, y, z);
 		final BlockPos in = below.up(1);
 		
-		if (golem.world.isAirBlock(in) && isPlantSupport(golem.world, below)) {
-			setToPlant(golem.world, in);
+		if (golem.worldObj.isAirBlock(in) && isPlantSupport(golem.worldObj, below)) {
+			setToPlant(golem.worldObj, in);
 		}
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean continueExecuting() {
 		return false;
 	}
 

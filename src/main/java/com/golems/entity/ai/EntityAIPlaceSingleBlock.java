@@ -45,7 +45,12 @@ public class EntityAIPlaceSingleBlock extends EntityAIBase {
 	 * @param interval ticks between placing block
 	 **/
 	public EntityAIPlaceSingleBlock(final GolemBase golemIn, final IBlockState stateIn, final int interval, boolean configAllows) {
-		this(golemIn, stateIn, interval, configAllows, toReplace -> toReplace.getMaterial().equals(Material.AIR) && !toReplace.getBlock().equals(stateIn.getBlock()));
+		this(golemIn, stateIn, interval, configAllows, new Predicate<IBlockState>() {
+			@Override
+			public boolean test(IBlockState toReplace) {
+				return toReplace.getMaterial().equals(Material.AIR) && !toReplace.getBlock().equals(stateIn.getBlock());
+			}
+		});
 	}
 
 	@Override
@@ -60,9 +65,9 @@ public class EntityAIPlaceSingleBlock extends EntityAIBase {
 	public void updateTask() {
 		long tickMod = this.golem.getEntityWorld().getWorldTime() % this.tickDelay;
 		if (this.configAllows && tickMod == (long) 0) {
-			final int x = MathHelper.floor(golem.posX);
-			final int y = MathHelper.floor(golem.posY - 0.20000000298023224D - golem.getYOffset());
-			final int z = MathHelper.floor(golem.posZ);
+			final int x = MathHelper.floor_double(golem.posX);
+			final int y = MathHelper.floor_double(golem.posY - 0.20000000298023224D - golem.getYOffset());
+			final int z = MathHelper.floor_double(golem.posZ);
 			final BlockPos blockPosIn = new BlockPos(x, y, z);
 			// test the predicate against each BlockPos in a vertical column around this golem
 			// when it passes, place the block and return

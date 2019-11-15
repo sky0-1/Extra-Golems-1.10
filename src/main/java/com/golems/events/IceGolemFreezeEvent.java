@@ -53,7 +53,7 @@ public final class IceGolemFreezeEvent extends Event {
 	}
 
 	public void initAffectedBlockList(final int range) {
-		this.affectedBlocks = new ArrayList<>(range * range * 2 * 4);
+		this.affectedBlocks = new ArrayList(range * range * 2 * 4);
 		final int maxDis = range * range;
 		// check 3-layer circle around this golem (disc, not sphere) to add positions to the map
 		for (int i = -range; i <= range; i++) {

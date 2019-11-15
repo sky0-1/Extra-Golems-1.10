@@ -9,7 +9,6 @@ import com.golems.util.GolemLookup;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -31,15 +30,13 @@ public final class ItemBedrockGolem extends Item {
 	}
 
 	@Override
-	public EnumActionResult onItemUse(final EntityPlayer player, final World worldIn, final BlockPos pos,
-					  final EnumHand hand, final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
-		final ItemStack stack = player.getHeldItem(hand);
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos,
+			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		// creative players can use this item to spawn a bedrock golem
 		if (GolemLookup.getConfig(EntityBedrockGolem.class).canSpawn()) {
 			if (Config.isBedrockGolemCreativeOnly() && !player.capabilities.isCreativeMode) {
 				return EnumActionResult.PASS;
 			}
-
 			if (facing == EnumFacing.DOWN) {
 				return EnumActionResult.FAIL;
 			}
@@ -51,12 +48,12 @@ public final class ItemBedrockGolem extends Item {
 				final GolemBase golem = new EntityBedrockGolem(worldIn);
 				golem.setPlayerCreated(true);
 				golem.moveToBlockPosAndAngles(spawn, 0.0F, 0.0F);
-				worldIn.spawnEntity(golem);
+				worldIn.spawnEntityInWorld(golem);
 			}
 			spawnParticles(worldIn, pos.getX() - 0.5D, pos.getY() + 1.0D, pos.getZ() - 0.5D, 0.2D);
 			player.swingArm(hand);
 			if (!player.capabilities.isCreativeMode) {
-				stack.shrink(1);
+				stack.stackSize--;
 			}
 			return EnumActionResult.SUCCESS;
 		}
@@ -84,8 +81,8 @@ public final class ItemBedrockGolem extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(final ItemStack par1ItemStack, final World world, final List<String> par3List,
-				   final ITooltipFlag flag) {
+	public void addInformation(final ItemStack par1ItemStack, final EntityPlayer player, final List<String> par3List,
+				   final boolean advanced) {
 		final String loreCreativeOnly = TextFormatting.RED + trans("tooltip.creative_only_item");
 		if (Config.isBedrockGolemCreativeOnly()) {
 			par3List.add(loreCreativeOnly);
@@ -105,7 +102,7 @@ public final class ItemBedrockGolem extends Item {
 	}
 
 	@SideOnly(Side.CLIENT)
-	private String trans(final String s) {
+	private static String trans(final String s) {
 		return I18n.format(s);
 	}
 }

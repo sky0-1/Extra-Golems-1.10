@@ -49,9 +49,9 @@ public class GolemConfigSet {
 
 	public GolemConfigSet(final Configuration configFile, final String name, final boolean spawn, final double health,
 			      final float attack) {
-		this.mapInt = new TObjectIntHashMap<>(1);
-		this.mapFloat = new TObjectFloatHashMap<>(1);
-		this.mapBoolean = new TObjectByteHashMap<>(1);
+		this.mapInt = new TObjectIntHashMap(1);
+		this.mapFloat = new TObjectFloatHashMap(1);
+		this.mapBoolean = new TObjectByteHashMap(1);
 		this.config = configFile;
 		this.golemName = name;
 		this.category = this.golemName.toLowerCase().replace(' ', '_');

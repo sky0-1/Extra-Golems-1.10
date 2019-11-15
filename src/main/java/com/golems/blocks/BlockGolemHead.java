@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -39,7 +40,8 @@ public final class BlockGolemHead extends BlockHorizontal {
 	@Deprecated
 	@Override
 	public IBlockState getStateForPlacement(final World worldIn, final BlockPos pos, final EnumFacing facing,
-						final float hitX, final float hitY, final float hitZ, final int meta, final EntityLivingBase placer) {
+						final float hitX, final float hitY, final float hitZ, final int meta, 
+						final EntityLivingBase placer, final ItemStack stack) {
 		return this.getDefaultState().withProperty(FACING,
 			placer.getHorizontalFacing().getOpposite());
 	}
@@ -52,7 +54,7 @@ public final class BlockGolemHead extends BlockHorizontal {
 	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(final int meta) {
-		return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
+		return this.getDefaultState().withProperty(FACING, EnumFacing.HORIZONTALS[meta]);
 	}
 
 	/**
@@ -120,7 +122,7 @@ public final class BlockGolemHead extends BlockHorizontal {
 					final EntitySnowman entitysnowman = new EntitySnowman(world);
 					ExtraGolems.LOGGER.info("[Extra Golems]: Building regular boring Snow Golem");
 					entitysnowman.setLocationAndAngles(x, y, z, 0.0F, 0.0F);
-					world.spawnEntity(entitysnowman);
+					world.spawnEntityInWorld(entitysnowman);
 				}
 
 				ItemBedrockGolem.spawnParticles(world, x, y + 0.5D, z, 0.2D);
@@ -143,7 +145,7 @@ public final class BlockGolemHead extends BlockHorizontal {
 					ExtraGolems.LOGGER.info("[Extra Golems]: Building regular boring Iron Golem");
 					golem.setPlayerCreated(true);
 					golem.setLocationAndAngles(x, y, z, 0.0F, 0.0F);
-					world.spawnEntity(golem);
+					world.spawnEntityInWorld(golem);
 					return true;
 				}
 
@@ -166,7 +168,7 @@ public final class BlockGolemHead extends BlockHorizontal {
 					ExtraGolems.LOGGER.info("[Extra Golems]: Building golem " + golem.toString());
 					golem.setPlayerCreated(true);
 					golem.setLocationAndAngles(x, y, z, 0.0F, 0.0F);
-					world.spawnEntity(golem);
+					world.spawnEntityInWorld(golem);
 					golem.onBuilt(stateBelow1, stateBelow2, arm1, arm2);
 					return true;
 				}

@@ -13,7 +13,6 @@ public final class GolemNames {
 	public static final String BOOKSHELF_GOLEM = "golem_bookshelf";
 	public static final String CLAY_GOLEM = "golem_clay";
 	public static final String COAL_GOLEM = "golem_coal";
-	public static final String CONCRETE_GOLEM = "golem_concrete";
 	public static final String CRAFTING_GOLEM = "golem_crafting";
 	public static final String DIAMOND_GOLEM = "golem_diamond";
 	public static final String EMERALD_GOLEM = "golem_emerald";
@@ -49,7 +48,7 @@ public final class GolemNames {
 	public static final String WOOL_GOLEM = "golem_wool";
 
 	public static final String[] ALL_GOLEMS = new String[] {
-		BEDROCK_GOLEM, BONE_GOLEM, BOOKSHELF_GOLEM, CLAY_GOLEM, COAL_GOLEM, CONCRETE_GOLEM,
+		BEDROCK_GOLEM, BONE_GOLEM, BOOKSHELF_GOLEM, CLAY_GOLEM, COAL_GOLEM,
 		CRAFTING_GOLEM, DIAMOND_GOLEM, EMERALD_GOLEM, ENDSTONE_GOLEM, GLASS_GOLEM,
 		GLOWSTONE_GOLEM, GOLD_GOLEM, ICE_GOLEM, LAPIS_GOLEM, LEAF_GOLEM, MAGMA_GOLEM,
 		MELON_GOLEM, MUSHROOM_GOLEM, NETHERBRICK_GOLEM, NETHERWART_GOLEM, OBSIDIAN_GOLEM,

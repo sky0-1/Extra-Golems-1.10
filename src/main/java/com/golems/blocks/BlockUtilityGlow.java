@@ -32,7 +32,7 @@ public class BlockUtilityGlow extends BlockUtility {
 	@Override
 	public void updateTick(final World worldIn, final BlockPos pos, final IBlockState state, final Random rand) {
 		// make a slightly expanded AABB to check for the golem
-		AxisAlignedBB toCheck = new AxisAlignedBB(pos).grow(0.5D);
+		AxisAlignedBB toCheck = new AxisAlignedBB(pos).expandXyz(0.5D);
 		List<GolemBase> list = worldIn.getEntitiesWithinAABB(GolemBase.class, toCheck);
 		boolean hasLightGolem = list != null && !list.isEmpty() && hasLightGolem(list);
 

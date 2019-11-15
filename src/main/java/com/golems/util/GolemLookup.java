@@ -16,14 +16,12 @@ import com.golems.main.Config;
 import com.golems.main.ExtraGolems;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.RegistryDelegate;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IRegistryDelegate;
 
 /**
  * This class contains methods to convert from building block to the
@@ -37,9 +35,9 @@ public final class GolemLookup {
 	/**
 	 * Map to retrieve the Golem that is built from the given Block. This is used most.
 	 **/
-	private static final Map<IRegistryDelegate<Block>, Class<? extends GolemBase>> BLOCK_TO_GOLEM = new HashMap();
+	private static final Map<RegistryDelegate<Block>, Class<? extends GolemBase>> BLOCK_TO_GOLEM = new HashMap();
 	/** Map to retrieve all Blocks this Golem uses. Used for Golem Book. **/
-	private static final Map<Class<? extends GolemBase>, Set<IRegistryDelegate<Block>>> GOLEM_TO_BLOCK = new HashMap();
+	private static final Map<Class<? extends GolemBase>, Set<RegistryDelegate<Block>>> GOLEM_TO_BLOCK = new HashMap();
 	/** Map to retrieve the GolemConfigSet for this golem **/
 	private static final Map<Class<? extends GolemBase>, GolemConfigSet> GOLEM_TO_CONFIG = new HashMap();
 		
@@ -90,7 +88,7 @@ public final class GolemLookup {
 						      @Nullable final Block... buildingBlocks) {
 		if(buildingBlocks != null && buildingBlocks.length > 0) {	
 			// populate the set
-			Set<IRegistryDelegate<Block>> blocks = new HashSet();
+			Set<RegistryDelegate<Block>> blocks = new HashSet();
 			for(final Block b : buildingBlocks) {
 				if(b != null) {
 					blocks.add(b.delegate);
@@ -158,7 +156,11 @@ public final class GolemLookup {
 		Class<? extends GolemBase> clazz = getGolemClass(block);
 		if(clazz != null) {
 			// try to make a new instance of the golem
-			return (GolemBase) EntityList.newEntity(clazz, world);
+			try {
+				return clazz.getConstructor(World.class).newInstance(world);
+			} catch (final Exception e) {
+				ExtraGolems.LOGGER.error(e.getMessage());
+			}
 		}
 		return null;
 	}
@@ -202,7 +204,7 @@ public final class GolemLookup {
 			ExtraGolems.LOGGER.error("Can't get a block from a null golem!");
 			return new Block[0];
 		} else if (GOLEM_TO_BLOCK.containsKey(golemClazz)) {
-			final IRegistryDelegate<Block>[] blockSet = GOLEM_TO_BLOCK.get(golemClazz).toArray(new IRegistryDelegate[0]);
+			final RegistryDelegate<Block>[] blockSet = GOLEM_TO_BLOCK.get(golemClazz).toArray(new RegistryDelegate[0]);
 			final Block[] blocks = new Block[blockSet.length];
 			for(int i = 0, l = blockSet.length; i < l; i++) {
 				blocks[i] = blockSet[i].get();
@@ -278,7 +280,7 @@ public final class GolemLookup {
 	}
 
 	/** @return all valid Blocks to build a golem **/
-	public static Set<IRegistryDelegate<Block>> getBlockSet() {
+	public static Set<RegistryDelegate<Block>> getBlockSet() {
 		return BLOCK_TO_GOLEM.keySet();
 	}
 

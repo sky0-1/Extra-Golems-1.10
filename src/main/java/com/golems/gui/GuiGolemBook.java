@@ -384,8 +384,8 @@ public class GuiGolemBook extends GuiScreen {
  		int numX = isLeft ? ((this.width / 2) - MARGIN) : ((this.width / 2) + MARGIN);
  		int numY = cornerY + BOOK_HEIGHT - (ARROW_HEIGHT * 3 / 2);
  		String pageNumLeft = String.valueOf(pageNum);
- 		int sWidth = isLeft ? this.fontRenderer.getStringWidth(pageNumLeft) : 0;
-        this.fontRenderer.drawString(pageNumLeft, numX - sWidth, numY , 0);
+ 		int sWidth = isLeft ? this.fontRendererObj.getStringWidth(pageNumLeft) : 0;
+        this.fontRendererObj.drawString(pageNumLeft, numX - sWidth, numY , 0);
     }
     
     /** 
@@ -414,13 +414,13 @@ public class GuiGolemBook extends GuiScreen {
     	int nameX = cornerX + MARGIN * 4;
  		int nameY = cornerY + MARGIN;
  		String golemName = entry.getGolemName();
- 		this.fontRenderer.drawSplitString(golemName, nameX, nameY, (BOOK_WIDTH / 2) - MARGIN * 5, 0);
+ 		this.fontRendererObj.drawSplitString(golemName, nameX, nameY, (BOOK_WIDTH / 2) - MARGIN * 5, 0);
 
  		// 'golem stats' text box
  		int statsX = cornerX + MARGIN;
  		int statsY = nameY + MARGIN * 2;
  		String stats = entry.getDescriptionPage();
- 		this.fontRenderer.drawSplitString(stats, statsX, statsY, (BOOK_WIDTH / 2) - (MARGIN * 2), 0);  
+ 		this.fontRendererObj.drawSplitString(stats, statsX, statsY, (BOOK_WIDTH / 2) - (MARGIN * 2), 0);  
  		
  		// 'golem block'
  		// this.drawBlock(entry.getBlock(), cornerX, cornerY, GOLEM_BLOCK_SCALE);
@@ -443,18 +443,18 @@ public class GuiGolemBook extends GuiScreen {
     	
     	int titleX = cornerX + MARGIN + 4;
     	int titleY = cornerY + MARGIN;
-    	int sWidth = this.fontRenderer.getStringWidth(title);
+    	int sWidth = this.fontRendererObj.getStringWidth(title);
     	if(sWidth > maxWidth) {
     		// draw title wrapped
-    		this.fontRenderer.drawSplitString(title, titleX, titleY, maxWidth, 0);
+    		this.fontRendererObj.drawSplitString(title, titleX, titleY, maxWidth, 0);
     	} else {
     		// draw title centered
-    		this.fontRenderer.drawString(title, titleX + ((maxWidth - sWidth) / 2), titleY, 0);
+    		this.fontRendererObj.drawString(title, titleX + ((maxWidth - sWidth) / 2), titleY, 0);
     	}
     	
     	int bodyX = titleX;
     	int bodyY = titleY + MARGIN * 2;
-    	this.fontRenderer.drawSplitString(body, bodyX, bodyY, maxWidth, 0);    	
+    	this.fontRendererObj.drawSplitString(body, bodyX, bodyY, maxWidth, 0);    	
     }   
     
     private void draw2x2GridAt(final int startX, final int startY, final ItemStack[] ingredients, final ItemStack result) {
@@ -632,7 +632,7 @@ public class GuiGolemBook extends GuiScreen {
 	}
 	
 	private static GolemBookEntry[] getGolemEntriesForScroll(final float scrollIn) {
-		float scroll = MathHelper.clamp(scrollIn, 0.0F, 1.0F);
+		float scroll = MathHelper.clamp_float(scrollIn, 0.0F, 1.0F);
 		int i = (int)(scroll * (float)(ALPHABETICAL.size() - NUM_CONTENTS_ENTRIES));
 		return ALPHABETICAL.subList(i, i + NUM_CONTENTS_ENTRIES).toArray(new GolemBookEntry[NUM_CONTENTS_ENTRIES]);
 	}
@@ -641,19 +641,7 @@ public class GuiGolemBook extends GuiScreen {
 	protected static String trans(final String s, final Object... strings) {
 		return I18n.format(s, strings);
 	}
-/*
-	protected static class BlockButton extends GuiButton {
 
-		public BlockButton(int buttonId, int x, int y, float scaleIn) {
-			super(buttonId, x, y, (int) (scaleIn * 16.0F), (int) (scaleIn * 16.0F), "");
-		}
-
-		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-		}
-	}
-*/
 	protected static class BlockButton extends GuiButton {
 		
 		private float scale;
@@ -669,12 +657,12 @@ public class GuiGolemBook extends GuiScreen {
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+		public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 			if(this.visible) {
 				// update hovered flag
-				this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;				
+				this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;				
 				// draw the block
-				gui.drawBlock(this.currentBlock, this.x - MARGIN - 4, this.y - MARGIN, this.scale);
+				gui.drawBlock(this.currentBlock, this.xPosition - MARGIN - 4, this.yPosition - MARGIN, this.scale);
 			}
 		}
 		
@@ -695,7 +683,9 @@ public class GuiGolemBook extends GuiScreen {
 		public boolean drawHoveringCaption(final int mouseX, final int mouseY) {
 			// draw the name of the block if this button is being hovered over
 			if(this.currentBlock != Blocks.AIR) {
-				this.gui.drawHoveringText(this.currentBlock.getLocalizedName(), mouseX, mouseY);
+				final List<String> hoveringText = new ArrayList();
+				hoveringText.add(this.currentBlock.getLocalizedName());
+				this.gui.drawHoveringText(hoveringText, mouseX, mouseY);
 				return true;
 			}
 			return false;
@@ -718,17 +708,17 @@ public class GuiGolemBook extends GuiScreen {
 		}
 		
 		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+		public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 			if(this.visible) {
-	            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+	            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 				mc.getTextureManager().bindTexture(CONTENTS);
 				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				// draw the background of the button
-				this.drawTexturedModalRect(this.x, this.y, CONTENTS_W + DEF_SEP, 
+				this.drawTexturedModalRect(this.xPosition, this.yPosition, CONTENTS_W + DEF_SEP, 
 						this.hovered ? ENTRY_H + DEF_SEP : 0, ENTRY_W, ENTRY_H);
 				// draw the block and name of the golem
 				// int index = (int)(gui.ticksOpen / 30);
-				gui.drawBlock(this.entry.getBlock(0), this.x - MARGIN - 2, this.y - 9, 1.0F);
+				gui.drawBlock(this.entry.getBlock(0), this.xPosition - MARGIN - 2, this.yPosition - 9, 1.0F);
 				
 				// prepare to draw the golem's name
 				GlStateManager.pushMatrix();
@@ -736,16 +726,16 @@ public class GuiGolemBook extends GuiScreen {
 				final String name = entry.getGolemName();
 				final int wrap = this.width - 20;
 				float scale = 1.0F;
-				int nameH = gui.fontRenderer.getWordWrappedHeight(name, wrap);
+				int nameH = gui.fontRendererObj.listFormattedStringToWidth(name, wrap).size() * gui.fontRendererObj.FONT_HEIGHT;
 				if(nameH > this.height) {
 					scale = 0.7F;
-					nameH = (int) (scale * gui.fontRenderer.getWordWrappedHeight(name, (int)(wrap / scale)));
+					nameH = (int) (scale * gui.fontRendererObj.listFormattedStringToWidth(name, (int)(wrap / scale)).size() * gui.fontRendererObj.FONT_HEIGHT);				
 				}
-				int nameX = this.x + 20;
-				int nameY = this.y + ((this.height - nameH) / 2) + 1;
+				int nameX = this.xPosition + 20;
+				int nameY = this.yPosition + ((this.height - nameH) / 2) + 1;
 				// re-scale and draw the golem name
 				GlStateManager.scale(scale, scale, scale);
-				gui.fontRenderer.drawSplitString(name, (int)((nameX) / scale), (int)(nameY / scale), (int)(wrap / scale), 0);
+				gui.fontRendererObj.drawSplitString(name, (int)((nameX) / scale), (int)(nameY / scale), (int)(wrap / scale), 0);
 				GlStateManager.popMatrix();
 			}
 		}
@@ -766,10 +756,10 @@ public class GuiGolemBook extends GuiScreen {
 		 * Draws this button to the screen.
 		 */
 		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+		public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 
 			if (this.visible) {
-				boolean mouseOver = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+				boolean mouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 				mc.getTextureManager().bindTexture(GuiGolemBook.TEXTURE);
 				int tx = 0;
@@ -783,7 +773,7 @@ public class GuiGolemBook extends GuiScreen {
 					ty += ARROW_HEIGHT;
 				}
 
-				this.drawTexturedModalRect(this.x, this.y, tx, ty, ARROW_WIDTH, ARROW_HEIGHT);
+				this.drawTexturedModalRect(this.xPosition, this.yPosition, tx, ty, ARROW_WIDTH, ARROW_HEIGHT);
 			}
 		}
 	}

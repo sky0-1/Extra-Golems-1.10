@@ -1,29 +1,78 @@
 package com.golems.proxies;
 
-import com.golems.entity.*;
-import com.golems.main.ExtraGolems;
+import com.golems.entity.EntityBedrockGolem;
+import com.golems.entity.EntityBoneGolem;
+import com.golems.entity.EntityBookshelfGolem;
+import com.golems.entity.EntityClayGolem;
+import com.golems.entity.EntityCoalGolem;
+import com.golems.entity.EntityCraftingGolem;
+import com.golems.entity.EntityDiamondGolem;
+import com.golems.entity.EntityEmeraldGolem;
+import com.golems.entity.EntityEndstoneGolem;
+import com.golems.entity.EntityFurnaceGolem;
+import com.golems.entity.EntityGlassGolem;
+import com.golems.entity.EntityGlowstoneGolem;
+import com.golems.entity.EntityGoldGolem;
+import com.golems.entity.EntityHardenedClayGolem;
+import com.golems.entity.EntityIceGolem;
+import com.golems.entity.EntityLapisGolem;
+import com.golems.entity.EntityLeafGolem;
+import com.golems.entity.EntityMagmaGolem;
+import com.golems.entity.EntityMelonGolem;
+import com.golems.entity.EntityMushroomGolem;
+import com.golems.entity.EntityNetherBrickGolem;
+import com.golems.entity.EntityNetherWartGolem;
+import com.golems.entity.EntityObsidianGolem;
+import com.golems.entity.EntityPrismarineGolem;
+import com.golems.entity.EntityQuartzGolem;
+import com.golems.entity.EntityRedSandstoneGolem;
+import com.golems.entity.EntityRedstoneGolem;
+import com.golems.entity.EntityRedstoneLampGolem;
+import com.golems.entity.EntitySandstoneGolem;
+import com.golems.entity.EntitySeaLanternGolem;
+import com.golems.entity.EntitySlimeGolem;
+import com.golems.entity.EntitySpongeGolem;
+import com.golems.entity.EntityStainedClayGolem;
+import com.golems.entity.EntityStainedGlassGolem;
+import com.golems.entity.EntityStrawGolem;
+import com.golems.entity.EntityTNTGolem;
+import com.golems.entity.EntityWoodenGolem;
+import com.golems.entity.EntityWoolGolem;
+import com.golems.entity.GolemBase;
+import com.golems.entity.GolemColorized;
 import com.golems.main.GolemItems;
 import com.golems.renders.RenderColoredGolem;
 import com.golems.renders.RenderGolem;
+
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod.EventBusSubscriber(value = Side.CLIENT, modid = ExtraGolems.MODID)
+@Mod.EventBusSubscriber(value = Side.CLIENT)
 public final class ClientProxy extends CommonProxy {
 
-	public static final IRenderFactory<GolemBase> FACTORY_TEXTURED_GOLEM = RenderGolem::new;
+	public static final IRenderFactory<GolemBase> FACTORY_TEXTURED_GOLEM = new IRenderFactory() {
+		@Override
+		public Render createRenderFor(final RenderManager manager) {
+			return new RenderGolem(manager);
+		}
+	};
 
-	public static final IRenderFactory<GolemColorized> FACTORY_COLORED_GOLEM = RenderColoredGolem::new;
+	public static final IRenderFactory<GolemColorized> FACTORY_COLORED_GOLEM = new IRenderFactory() {
+		@Override
+		public Render createRenderFor(final RenderManager manager) {
+			return new RenderColoredGolem(manager);
+		}
+	};
 
 	@SubscribeEvent
 	public static void registerModels(final ModelRegistryEvent event) {
@@ -41,7 +90,6 @@ public final class ClientProxy extends CommonProxy {
 		registerEntityRender(EntityBookshelfGolem.class);
 		registerEntityRender(EntityClayGolem.class);
 		registerEntityRender(EntityCoalGolem.class);
-		registerEntityRender(EntityConcreteGolem.class);
 		registerEntityRender(EntityCraftingGolem.class);
 		registerEntityRender(EntityDiamondGolem.class);
 		registerEntityRender(EntityEmeraldGolem.class);

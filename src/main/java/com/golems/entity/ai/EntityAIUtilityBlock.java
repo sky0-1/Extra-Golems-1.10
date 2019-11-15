@@ -65,9 +65,9 @@ public class EntityAIUtilityBlock extends EntityAIBase {
 	public void updateTask() {
 		long tickMod = this.golem.ticksExisted % this.tickDelay;
 		if (this.configAllows && tickMod == (long) 0) {
-			final int x = MathHelper.floor(golem.posX);
-			final int y = MathHelper.floor(golem.posY - 0.20000000298023224D - golem.getYOffset());
-			final int z = MathHelper.floor(golem.posZ);
+			final int x = MathHelper.floor_double(golem.posX);
+			final int y = MathHelper.floor_double(golem.posY - 0.20000000298023224D - golem.getYOffset());
+			final int z = MathHelper.floor_double(golem.posZ);
 			final BlockPos blockPosIn = new BlockPos(x, y, z);
 			// test the predicate against each BlockPos in a vertical column around this golem
 			// when it passes, place the block and return
@@ -96,7 +96,12 @@ public class EntityAIUtilityBlock extends EntityAIBase {
 	 * @param stateIn the state that will replace the given one if possible
 	 **/
 	public static BiPredicate<GolemBase, IBlockState> getDefaultBiPred(final IBlockState stateIn) {
-		return (golem, toReplace) -> toReplace.getBlock() == Blocks.AIR;
+		return new BiPredicate<GolemBase, IBlockState>() {
+			@Override
+			public boolean test(GolemBase golem, IBlockState toReplace) {
+				return toReplace.getBlock() == Blocks.AIR;
+			}
+		};
 	}
 	
 	protected  IBlockState getStateToPlace(final IBlockState toReplace) {

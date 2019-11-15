@@ -19,11 +19,10 @@ public class ItemInfoBook extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World worldIn, EntityPlayer playerIn, EnumHand handIn) {
 		if (playerIn.getEntityWorld().isRemote) {
 			GuiLoader.loadBookGui(playerIn, itemstack);
 		}
-		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
 	}
 }

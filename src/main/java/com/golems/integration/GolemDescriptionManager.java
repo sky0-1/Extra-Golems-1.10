@@ -40,7 +40,7 @@ public abstract class GolemDescriptionManager {
 	 **/
 	@SuppressWarnings("WeakerAccess")
 	public List<String> getEntityDescription(final GolemBase golem) {
-		List<String> list = new LinkedList<>();
+		List<String> list = new LinkedList();
 		if (showAttack) {
 			list.add(TextFormatting.GRAY + trans("entitytip.attack") + " : "
 				+ TextFormatting.WHITE + golem.getBaseAttackDamage());

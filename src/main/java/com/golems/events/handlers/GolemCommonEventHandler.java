@@ -1,5 +1,6 @@
 package com.golems.events.handlers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +27,7 @@ import com.golems.entity.GolemColorizedMultiTextured;
 import com.golems.entity.GolemMultiTextured;
 import com.golems.items.ItemBedrockGolem;
 import com.golems.main.Config;
+import com.golems.main.ExtraGolems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -42,6 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.Village;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDesert;
 import net.minecraft.world.biome.BiomeJungle;
@@ -71,19 +74,25 @@ public class GolemCommonEventHandler {
 				&& event.getRand().nextInt(100) < GOLEM_CHANCE) {
 			// Make sure this is near a village and try to spawn a Golem
 			BlockPos pos = new BlockPos(event.getChunkX() * 16, 100, event.getChunkZ() * 16);
-			Village village = event.getWorld().villageCollection.getNearestVillage(pos, 32);
+			Village village = event.getWorld().villageCollectionObj.getNearestVillage(pos, 32);
 			if(village != null) {
 				// spawn a golem based on the village biome
 				Biome biome = event.getWorld().getBiome(pos);
 				Class<? extends GolemBase> golemClazz = getGolemForBiome(biome, event.getRand());
 				if(golemClazz != null) {	
-					GolemBase golemInstance = (GolemBase)EntityList.newEntity(golemClazz, event.getWorld());
+					GolemBase golemInstance;
+					try {
+						golemInstance = golemClazz.getConstructor(World.class).newInstance(event.getWorld());
+					} catch(Exception e) {
+						ExtraGolems.LOGGER.error(e.getMessage());
+						return;
+					}
 					BlockPos spawn = getSafeSpawnPos(golemInstance, pos.add(8, 0, 8));
 					if(spawn != null) {
 						// spawn the golem
 						golemInstance.setPosition(spawn.getX(), spawn.getY(), spawn.getZ());
 						golemInstance.setPlayerCreated(false);
-						event.getWorld().spawnEntity(golemInstance);
+						event.getWorld().spawnEntityInWorld(golemInstance);
 						// randomize texture if applicable
 						if(golemInstance instanceof GolemMultiTextured) {
 							byte texture = (byte)event.getRand().nextInt(((GolemMultiTextured)golemInstance).getNumTextures());
@@ -106,7 +115,7 @@ public class GolemCommonEventHandler {
 			// get a random position near the passed BlockPos
 			int x = near.getX() + entity.getEntityWorld().rand.nextInt(radius * 2) - radius;
 			int z = near.getZ() + entity.getEntityWorld().rand.nextInt(radius * 2) - radius;
-			int y = entity.getEntityWorld().getHeight(x, z) + 16;
+			int y = entity.getEntityWorld().getHeightmapHeight(x, z) + 16;
 			testing = new BlockPos(x, y, z);
 			// make sure to end up with a solid block
 			while(entity.getEntityWorld().isAirBlock(testing) && testing.getY() > 0) {
@@ -195,7 +204,7 @@ public class GolemCommonEventHandler {
 		ItemStack stack = event.getItemStack();
 		// check qualifications for running this event...
 		if(Config.doesPumpkinBuildGolem() && !event.isCanceled() 
-				&& !stack.isEmpty() && stack.getItem() instanceof ItemBlock) {
+				&& stack != null && stack.getItem() instanceof ItemBlock) {
 			Block heldBlock = ((ItemBlock)stack.getItem()).getBlock();
 			// if player is holding pumpkin or lit pumpkin, try to place the block
 			if(heldBlock instanceof BlockPumpkin) {
@@ -215,7 +224,7 @@ public class GolemCommonEventHandler {
 						BlockGolemHead.trySpawnGolem(event.getWorld(), pumpkinPos);
 						// reduce itemstack
 						if(!event.getEntityPlayer().isCreative()) {
-							event.getItemStack().shrink(1);
+							event.getItemStack().stackSize--;
 						}
 					}
 				}
@@ -234,7 +243,7 @@ public class GolemCommonEventHandler {
 			final EntityIronGolem golem = (EntityIronGolem)event.getTarget();
 			if(golem.getHealth() < golem.getMaxHealth()) {
 				golem.heal(golem.getMaxHealth() * 0.25F);
-				event.getItemStack().shrink(1);
+				event.getItemStack().stackSize--;
 				// if currently attacking this player, stop
 				if(golem.getAttackTarget() == event.getEntityPlayer()) {
 					golem.setRevengeTarget(null);
@@ -256,13 +265,8 @@ public class GolemCommonEventHandler {
 		if(event.getEntityLiving() instanceof EntityLiving 
 				&& event.getTarget() instanceof EntityFurnaceGolem 
 				&& !((EntityFurnaceGolem)event.getTarget()).hasFuel()) {
-				// clear the attack target
-				((EntityLiving)event.getEntityLiving()).setAttackTarget(null);
-			} 
-//				else if(event.getEntityLiving() instanceof EntityFurnaceGolem
-//					&& !((EntityFurnaceGolem)event.getEntityLiving()).hasFuel()) {
-//				((EntityFurnaceGolem)event.getEntityLiving()).setAttackTarget(null);
-//			}
-//		}
+			// clear the attack target
+			((EntityLiving)event.getEntityLiving()).setAttackTarget(null);
+		}
 	}
 }

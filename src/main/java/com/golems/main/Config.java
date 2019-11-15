@@ -52,6 +52,7 @@ import com.golems.util.GolemNames;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 /**
@@ -88,7 +89,7 @@ public final class Config {
 	
 	public static final int RANDOM_HEAL_TIMER = 450;
 
-	public static final Set<String> SECRET = new HashSet<>();
+	public static final Set<String> SECRET = new HashSet();
 
 	public static void mainRegistry(final Configuration config) {
 		config.load();
@@ -109,9 +110,6 @@ public final class Config {
 		GolemLookup.addConfig(EntityClayGolem.class, new GolemConfigSet(config, "Clay Golem", 20.0D, 2.0F));
 		GolemLookup.addConfig(EntityCoalGolem.class, new GolemConfigSet(config, "Coal Golem", 14.0D, 2.5F)
 			.addKey(EntityCoalGolem.ALLOW_SPECIAL, false, "Whether this golem can inflict blindness"));
-		GolemLookup.addConfig(EntityConcreteGolem.class, 
-				new GolemConfigSet(config, "Concrete Golem", 38.0D, 6.0F)
-				.addKey(EntityConcreteGolem.ALLOW_RESIST, true, "Whether this golem reduces damage it takes"));
 		GolemLookup.addConfig(EntityCraftingGolem.class, new GolemConfigSet(config, "Crafting Golem", 24.0D, 2.0F)
 			.addKey(EntityCraftingGolem.ALLOW_SPECIAL, true, "Whether this golem can open a crafting grid"));
 		GolemLookup.addConfig(EntityDiamondGolem.class, new GolemConfigSet(config, "Diamond Golem", 220.0D, 20.0F));

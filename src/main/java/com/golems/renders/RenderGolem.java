@@ -9,6 +9,7 @@ import com.golems.util.GolemNames;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -45,18 +46,18 @@ public class RenderGolem<T extends GolemBase> extends RenderLiving<T> {
 		texture = golem.getTextureType();
 	}
 
-	@Override
-	protected void applyRotations(final T golem, final float p_77043_2_, final float rotationYaw,
-				      final float partialTicks) {
-		super.applyRotations(golem, p_77043_2_, rotationYaw, partialTicks);
+	 protected void rotateCorpse(final T entityLiving, final float p_77043_2_, final float p_77043_3_, final float partialTicks)
+	    {
+	        super.rotateCorpse(entityLiving, p_77043_2_, p_77043_3_, partialTicks);
 
-		if ((double) golem.limbSwingAmount >= 0.01D) {
-			final float f = 13.0F;
-			final float f1 = golem.limbSwing - golem.limbSwingAmount * (1.0F - partialTicks) + 6.0F;
-			final float f2 = (Math.abs(f1 % f - f * 0.5F) - f * 0.25F) / (f * 0.25F);
-			GlStateManager.rotate(6.5F * f2, 0.0F, 0.0F, 1.0F);
-		}
-	}
+	        if ((double)entityLiving.limbSwingAmount >= 0.01D)
+	        {
+	            float f = 13.0F;
+	            float f1 = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - partialTicks) + 6.0F;
+	            float f2 = (Math.abs(f1 % 13.0F - 6.5F) - 3.25F) / 3.25F;
+	            GlStateManager.rotate(6.5F * f2, 0.0F, 0.0F, 1.0F);
+	        }
+	    }
 
 	protected void renderDamage(final T golem, final double x, final double y, final double z, final float entityYaw,
 			final float partialTicks) {
